@@ -1,0 +1,183 @@
+#!/usr/bin/python
+#-*- coding: utf-8 -*-
+
+import numpy as np
+import sys, time, math
+from sys import stderr
+
+"""
+solve poisson equation:
+    (d/dx)^2 φ(x) = ρ(x),      x ∈ (0,1),
+    φ(0) = 0,
+    φ(1) = 0,
+using Gauss-Zeidel method + MultiGrid method
+
+2017/05/26 written by H.Iwasaki
+"""
+
+def multigrid(level, phi0, rho,
+              n1, n2, mu,
+              solve, iterate, residue, restrict, prolong) :
+    """
+    multigrid method
+    solving equtaion : residue(phi0, rho) = 0
+    by iterating : phi = iterate(phi,rho)
+    accelated by multigrid method
+
+    level : multigrid level
+    phi0  : initial guess of solution
+    rho   : given data or residue
+    n1, n2: pre-,post- smoothing
+    mu    : cycle of multigrid
+    solve, iterate, residue, restrict, prolong : function
+    """
+
+    if (level == 0) :
+        phi = solve(phi0, rho)
+    else :
+        phi = phi0.copy()
+        for it in range(n1) :       # pre smoothing
+            phi = iterate(phi, rho)
+
+        res = restrict(residue(phi, rho)) #residue in corse mesh
+
+        dphi = np.zeros_like(res)
+        for it in range(mu) :       # Vcycle(mu=1),Wcycle(mu=2),...
+            dphi = multigrid(level-1, dphi, res,
+                             n1, n2, mu,
+                             solve, iterate, residue, restrict, prolong)
+
+        phi = phi + prolong(dphi)   # to fine mesh
+        for it in range(n2) :       # post smoothing
+            phi = iterate(phi, rho)
+    return phi
+
+
+def relative_error(a,b) :
+    return math.sqrt(sum((a-b)**2)/(sum(a**2)+sum(b**2)+1.e-300))
+
+#====================================================================
+
+
+
+def main():
+    #====================================================================
+    # parameters
+    #====================================================================
+    # physical parameters
+    LENGTH  = 1.0          # system length
+
+    # numerical parameters
+    LOGN    = 7            # log of number of grid
+    LEVEL   = LOGN-2       # must be <= logn - 2
+    N       = 1 << LOGN    # number of grid
+    DX      = LENGTH / N   # mesh size in finest grid
+
+    EPS     = 1.e-5        # presion in the corsest grid
+    MAXITER = 1000         # max iteration in the corsest grid
+
+    N1      = 5            # number of pre-smoothing in MG
+    N2      = 5            # number of post-smoothing in MG
+    MU      = 1            # number of cycle in MG
+
+    # print >> stderr, "LENGTH = %g, LEVEL = %d, N = %d" % (LENGTH, LEVEL, N)
+    # print >> stderr, "N1 = %d, N2 = %d, MU = %d" % (N1, N2, MU)
+    # print >> stderr, ""
+
+    #====================================================================
+    # functions for multigrid
+    #====================================================================
+    def iterate(phi0, rho):
+        """
+        Gauss Zeidel method
+        """
+        n   = phi0.size - 1
+        dx  = LENGTH / n
+        phi = phi0.copy()
+        for i in range(1,n):
+            phi[i] = (phi[i-1]+phi[i+1])/2 - dx*dx*rho[i]/2
+        return phi
+
+    def solve(phi0, rho):
+        n   = phi0.size - 1
+        dx  = LENGTH / n
+        phi = phi0.copy()
+        for it in range(MAXITER) :
+            phi_new = iterate(phi, rho)
+            err = relative_error(phi_new, phi)
+            phi = phi_new
+            if (err < EPS) : break
+        return phi
+
+    def residue(phi, rho):
+        n   = phi.size-1
+        dx  = LENGTH / n
+        res = rho.copy()
+        for i in range(1,n):
+            res[i] -= (phi[i-1]-2*phi[i]+phi[i+1])/(dx*dx)
+        return res
+
+    def restrict(phi):
+        nh   = (phi.size-1)/2
+        phih = np.zeros(nh+1)
+        for i in range(1,nh):
+            phih[i] = (phi[2*i-1]+phi[2*i+1])/4 + phi[2*i]/2
+        return phih
+
+    def prolong(phih):
+        n   = (phih.size-1)*2
+        phi = np.zeros(n+1)
+        for i in range(1,n):
+            if (i%2==0) : phi[i] = phih[i/2]
+            if (i%2==1) : phi[i] = (phih[i/2]+phih[i/2+1])/2
+        return phi
+
+
+    mg = lambda level, phi, rho : multigrid(level, phi, rho,
+                                            N1, N2, MU,
+                                            solve,
+                                            iterate,
+                                            residue,
+                                            restrict,
+                                            prolong)
+
+    #====================================================================
+
+    # initialize
+    phi   = np.zeros(N+1)
+    rho   = np.zeros(N+1); rho[N/2] = 1./DX
+    x     = np.linspace(0, LENGTH, N+1)
+    ans   = (abs(0.5-x)-0.5)/2              # answer
+
+    # Plain GS
+    print >> stderr, "PLAIN GS"
+    phi        = np.zeros_like(phi)
+    start_time = time.time()
+    for it in range(100000):
+        phi = iterate(phi ,rho)
+        err = relative_error(ans, phi)
+        print >> stderr, "iter, err = %d, %g" % (it, err), '\r',
+        if err < 1.e-10 : break
+    print >> stderr, ""
+    print >> stderr, "elapsed_time = ",time.time()-start_time
+    #print "phi=", phi
+
+    print >> stderr, ""
+    #========================================================
+
+    # MultiGrid + GS
+    print >> stderr, "MG+GS"
+    phi        = np.zeros_like(phi)
+    start_time = time.time()
+    for it in range(20):
+        phi = mg(LEVEL, phi ,rho)
+        err = relative_error(ans, phi)
+        print >> stderr, "iter, err = %d, %g" % (it, err), '\r',
+        if err < 1.e-10 : break
+    print >> stderr, ""
+    print >> stderr, "elapsed_time = ",time.time()-start_time
+    #print "phi=", phi
+    return
+
+if __name__ == '__main__':
+    main()
