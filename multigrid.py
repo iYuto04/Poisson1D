@@ -15,8 +15,9 @@ class GaussSeidelMethod:
         self.phi = np.zeros(self.N + 1)
         self.rho = np.zeros(self.N + 1)
         self.rho[int(self.N/2)] = 1./self.DX
-        # self.rho[int(self.N / 2)] = 1000
         self.x = [-self.LENGTH / 2 + self.DX * i for i in range(self.N + 1)]
+        self.ans = (np.abs(self.x)-0.5)/2              # answer
+
 
     def relative_err(self, a, b):
         return (sum((a - b) ** 2) / (sum(a ** 2) + sum(b ** 2) + 1e-10)) ** 0.5
@@ -40,7 +41,10 @@ class GaussSeidelMethod:
 
     def run(self):
         start_time = time.time()
-        self.phi = self.solve_GS(self.phi, self.rho)
+        for i in range (self.MAX_ITERATION):
+            self.phi = self.solve_GS(self.phi, self.rho)
+            if self.relative_err(self.phi, self.ans) < self.EPS:
+                break
         calc_time = time.time() - start_time
         print("GS:", calc_time, '(s)')
 
