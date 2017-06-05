@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5cae570-52ba-49e0-9a28-85656380c8e6" name="Default" comment="" />
+    <list default="true" id="c5cae570-52ba-49e0-9a28-85656380c8e6" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/multigrid.py" afterPath="$PROJECT_DIR$/multigrid.py" />
+    </list>
     <ignored path="Poisson1D.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -13,7 +16,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Poisson1D$multigrid.coverage" NAME="multigrid Coverage Results" MODIFIED="1496453590626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Poisson1D$multigrid.coverage" NAME="multigrid Coverage Results" MODIFIED="1496678509400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Poisson1D$main.coverage" NAME="main Coverage Results" MODIFIED="1496452226599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Poisson1D$mg_gs.coverage" NAME="mg_gs Coverage Results" MODIFIED="1496208102565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -24,12 +27,12 @@
     <window id="1">
       <content type="file-editors">
         <state>
-          <leaf>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
             <file leaf-file-name="mg_gs.py" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/mg_gs.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="248">
-                    <caret line="154" column="35" selection-start-line="154" selection-start-column="35" selection-end-line="154" selection-end-column="35" />
+                  <state relative-caret-position="1718">
+                    <caret line="130" column="49" selection-start-line="130" selection-start-column="49" selection-end-line="130" selection-end-column="49" />
                     <folding />
                   </state>
                 </provider>
@@ -49,7 +52,7 @@
       <file leaf-file-name="normal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/normal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
+            <state relative-caret-position="315">
               <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -61,10 +64,14 @@
       <file leaf-file-name="multigrid.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/multigrid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="184">
+              <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#1193#1237#0" expanded="false" />
+                <element signature="e#1267#1312#0" expanded="false" />
+                <element signature="e#1537#1734#0" expanded="false" />
+                <element signature="e#1777#2015#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -78,6 +85,9 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -126,8 +136,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -148,6 +156,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -481,11 +491,69 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/normal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multigrid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#1193#1237#0" expanded="false" />
+            <element signature="e#1267#1312#0" expanded="false" />
+            <element signature="e#1537#1734#0" expanded="false" />
+            <element signature="e#1777#2015#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/normal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/multigrid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#1193#1237#0" expanded="false" />
+            <element signature="e#1267#1312#0" expanded="false" />
+            <element signature="e#1537#1734#0" expanded="false" />
+            <element signature="e#1777#2015#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/normal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/normal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -502,6 +570,10 @@
           <caret line="176" column="47" selection-start-line="176" selection-start-column="47" selection-end-line="176" selection-end-column="47" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#1193#1237#0" expanded="false" />
+            <element signature="e#1267#1312#0" expanded="false" />
+            <element signature="e#1537#1734#0" expanded="false" />
+            <element signature="e#1777#2015#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -516,7 +588,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/normal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
+        <state relative-caret-position="315">
           <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -526,18 +598,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mg_gs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="154" column="35" selection-start-line="154" selection-start-column="35" selection-end-line="154" selection-end-column="35" />
+        <state relative-caret-position="1718">
+          <caret line="130" column="49" selection-start-line="130" selection-start-column="49" selection-end-line="130" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/multigrid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+        <state relative-caret-position="184">
+          <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#1193#1237#0" expanded="false" />
+            <element signature="e#1267#1312#0" expanded="false" />
+            <element signature="e#1537#1734#0" expanded="false" />
+            <element signature="e#1777#2015#0" expanded="false" />
           </folding>
         </state>
       </provider>

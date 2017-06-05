@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 class GaussSeidelMethod:
     LENGTH = 1.0  # System length
-    logN = 7
-    N = 1 << logN
+    LOGN = 7
+    N = 1 << LOGN
     DX = LENGTH / N
     EPS = 1e-5
     MAX_ITERATION = 100000
@@ -47,11 +47,66 @@ class GaussSeidelMethod:
 
 
 class MultiGridMethod(GaussSeidelMethod):
-    PRE_SMOOTH_ite = 5
-    POST_SMOOTH_ite = 5
+    PRE_SMOOTH = 5
+    POST_SMOOTH = 5
     MU = 1  # number of cycle in multigrid
+    LOGN = 7
+    LEVEL = LOGN - 2 #gridの数が4が最小
+    pre = 5
 
 
+    def restrict(self, phi):
+        harf_n = int((len(phi)-1)/2)
+        harf_phi = np.zeros(harf_n + 1)
+        for i in range(1, harf_n):
+            harf_phi[i] = (phi[2*i - 1]+phi[2*i + 1])/4 + phi[2*i]/2
+        return  harf_phi
+
+    def prolong(self, harf_phi):
+        n = (len(harf_phi) - 1)*2
+        phi = np.zeros(n + 1)
+        for i in range(1,n):
+            if (i%2==0) : phi[i] = harf_phi[int(i/2)]
+            if (i%2==1) : phi[i] = (harf_phi[int(i/2)] + harf_phi[int(i/2+1)])/2
+        return phi
+
+    def residue(self,phi, rho):
+        n = len(rho) - 1
+        dx = self.LENGTH/n
+        res = np.zeros_like(rho)
+        for i in range(1, n):
+            res[i] = rho[i] - ((phi[i - 1] - 2*phi[i] + phi[i + 1])/(dx*dx))
+        return res
+
+    def multiGrid(self, level, phi, rho):
+        print(level)
+        if level == 0:
+            phi = self.solve_GS(phi, rho)
+        else:
+            for i in range(self.PRE_SMOOTH):
+                phi = self.gauss_seidel(phi,rho)
+                res = self.restrict(self.residue(phi,rho))
+            dphi = np.zeros_like(res)
+            for i in range(self.MU):
+                dphi = self.multiGrid(level-1, phi=dphi, rho=res)
+            phi += self.prolong(dphi)
+            for i in range(self.POST_SMOOTH):
+                phi = self.gauss_seidel(phi, rho)
+        return phi
+
+    def solve_MG(self, phi, rho):
+        for i in range(self.MAX_ITERATION):
+            new_phi = self.multiGrid(level=self.LEVEL, phi=phi, rho=rho)
+            err = self.relative_err(phi, new_phi)
+            if err < self.EPS:
+                break
+            else:
+                phi = new_phi
+            print(err)
+        return new_phi
+
+    def run(self):
+        self.phi = self.solve_MG(self.phi, self.rho)
 
 if __name__ == '__main__':
     # gs = GaussSeidelMethod()
@@ -59,4 +114,5 @@ if __name__ == '__main__':
     # gs.plot()
 
     mg = MultiGridMethod()
-    print(mg.MU)
+    mg.run()
+    mg.plot()
