@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 class GaussSeidelMethod:
     LENGTH = 1.0  # System length
@@ -13,8 +14,8 @@ class GaussSeidelMethod:
     def __init__(self):
         self.phi = np.zeros(self.N + 1)
         self.rho = np.zeros(self.N + 1)
-        # self.rho[int(self.N/2)] = 1./self.DX
-        self.rho[int(self.N / 2)] = 1000
+        self.rho[int(self.N/2)] = 1./self.DX
+        # self.rho[int(self.N / 2)] = 1000
         self.x = [-self.LENGTH / 2 + self.DX * i for i in range(self.N + 1)]
 
     def relative_err(self, a, b):
@@ -32,14 +33,16 @@ class GaussSeidelMethod:
         for i in range(self.MAX_ITERATION):
             new_phi = self.gauss_seidel(phi, rho)
             if self.relative_err(phi, new_phi) < self.EPS:
-                print('break')
                 break
             else:
                 phi = new_phi
         return new_phi
 
     def run(self):
+        start_time = time.time()
         self.phi = self.solve_GS(self.phi, self.rho)
+        calc_time = time.time() - start_time
+        print("GS:", calc_time, '(s)')
 
     def plot(self):
         plt.plot(self.x, self.phi)
@@ -79,7 +82,6 @@ class MultiGridMethod(GaussSeidelMethod):
         return res
 
     def multiGrid(self, level, phi, rho):
-        print(level)
         if level == 0:
             phi = self.solve_GS(phi, rho)
         else:
@@ -102,16 +104,18 @@ class MultiGridMethod(GaussSeidelMethod):
                 break
             else:
                 phi = new_phi
-            print(err)
         return new_phi
 
     def run(self):
+        start_time = time.time()
         self.phi = self.solve_MG(self.phi, self.rho)
+        calc_time = time.time() - start_time
+        print("MG: ", calc_time, "(s)")
 
 if __name__ == '__main__':
-    # gs = GaussSeidelMethod()
-    # gs.run()
-    # gs.plot()
+    gs = GaussSeidelMethod()
+    gs.run()
+    gs.plot()
 
     mg = MultiGridMethod()
     mg.run()
