@@ -110,17 +110,14 @@ class MultiGridMethod(GaussSeidelMethod):
                 phi = new_phi
         return new_phi
 
-    def run(self):
+    def run(self): #override
         start_time = time.time()
-        for i in range(self.MAX_ITERATION):
-            self.phi = self.solve_MG(self.phi, self.rho)
-            if self.relative_err(self.ans, self.phi) < self.EPS:
-                break
+        self.phi = self.solve_MG(self.phi, self.rho)
         calc_time = time.time() - start_time
         print("MG: ", calc_time, "(s)")
 
 class MultiGridMethod_v2(MultiGridMethod):
-    def restrict(self, phi):
+    def restrict(self, phi): #override
         harf_n = int((len(phi) - 1)/2)
         harf_phi = np.zeros(harf_n + 1)
         for i in range(1, harf_n):
@@ -130,10 +127,11 @@ class MultiGridMethod_v2(MultiGridMethod):
     def restrict_rho(self,rho):
         n = int((len(rho) - 1)/2)
         rho_r = np.zeros(n + 1)
-        rho_r[int(n/2)] = 1./self.DX
+        dx = self.LENGTH/n
+        rho_r[int(n/2)] = 1./dx
         return rho_r
 
-    def multiGrid(self, level, phi, rho):
+    def multiGrid(self, level, phi, rho): # override
         if level == 0:
             phi = self.solve_GS(phi, rho)
         else:
@@ -147,9 +145,19 @@ class MultiGridMethod_v2(MultiGridMethod):
                 phi = self.gauss_seidel(phi, rho)
         return phi
 
-    def run(self):
+    def solve_MG2(self, phi, rho):
+        for i in range(self.MAX_ITERATION):
+            new_phi = self.multiGrid(level=self.LEVEL, phi=phi, rho=rho)
+            err = self.relative_err(phi, new_phi)
+            if err < self.EPS:
+                break
+            else:
+                phi = new_phi
+        return new_phi
+
+    def run(self): #override
         start_time = time.time()
-        self.phi = self.solve_MG(self.phi, self.rho)
+        self.phi = self.solve_MG2(self.phi, self.rho)
         calc_time = time.time() - start_time
         print("MG2: ", calc_time, "(s)")
 
@@ -158,11 +166,11 @@ if __name__ == '__main__':
     gs = GaussSeidelMethod()
     gs.run()
     # gs.plot()
-    #
+
     mg = MultiGridMethod()
     mg.run()
     # mg.plot()
 
-    # mg2 = MultiGridMethod_v2()
-    # mg2.run()
+    mg2 = MultiGridMethod_v2()
+    mg2.run()
     # mg2.plot()
