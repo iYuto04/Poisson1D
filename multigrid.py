@@ -91,7 +91,7 @@ class MultiGridMethod(GaussSeidelMethod):
         else:
             for i in range(self.PRE_SMOOTH):
                 phi = self.gauss_seidel(phi,rho)
-                res = self.restrict(self.residue(phi,rho))
+            res = self.restrict(self.residue(phi,rho))
             dphi = np.zeros_like(res)
             for i in range(self.MU):
                 dphi = self.multiGrid(level-1, phi=dphi, rho=res)
@@ -112,15 +112,57 @@ class MultiGridMethod(GaussSeidelMethod):
 
     def run(self):
         start_time = time.time()
-        self.phi = self.solve_MG(self.phi, self.rho)
+        for i in range(self.MAX_ITERATION):
+            self.phi = self.solve_MG(self.phi, self.rho)
+            if self.relative_err(self.ans, self.phi) < self.EPS:
+                break
         calc_time = time.time() - start_time
         print("MG: ", calc_time, "(s)")
+
+class MultiGridMethod_v2(MultiGridMethod):
+    def restrict(self, phi):
+        harf_n = int((len(phi) - 1)/2)
+        harf_phi = np.zeros(harf_n + 1)
+        for i in range(1, harf_n):
+            harf_phi[i] = phi[2*i]
+        return harf_phi
+
+    def restrict_rho(self,rho):
+        n = int((len(rho) - 1)/2)
+        rho_r = np.zeros(n + 1)
+        rho_r[int(n/2)] = 1./self.DX
+        return rho_r
+
+    def multiGrid(self, level, phi, rho):
+        if level == 0:
+            phi = self.solve_GS(phi, rho)
+        else:
+            for i in range(self.PRE_SMOOTH):
+                phi = self.gauss_seidel(phi,rho)
+            phi_r = self.restrict(phi)
+            rho_r = self.restrict_rho(rho)
+            for i in range(self.MU):
+                phi += self.prolong(self.multiGrid(level-1, phi=phi_r, rho=rho_r) - phi_r)
+            for i in range(self.POST_SMOOTH):
+                phi = self.gauss_seidel(phi, rho)
+        return phi
+
+    def run(self):
+        start_time = time.time()
+        self.phi = self.solve_MG(self.phi, self.rho)
+        calc_time = time.time() - start_time
+        print("MG2: ", calc_time, "(s)")
+
 
 if __name__ == '__main__':
     gs = GaussSeidelMethod()
     gs.run()
-    gs.plot()
-
+    # gs.plot()
+    #
     mg = MultiGridMethod()
     mg.run()
-    mg.plot()
+    # mg.plot()
+
+    # mg2 = MultiGridMethod_v2()
+    # mg2.run()
+    # mg2.plot()
